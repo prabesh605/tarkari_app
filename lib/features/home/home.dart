@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tarkari_app/features/cart_screen/views/cart_screen.dart';
-import 'package:tarkari_app/features/home_screen/home_screen.dart';
+import 'package:tarkari_app/features/home_screen/views/home_screen.dart';
 import 'package:tarkari_app/features/profile_screen/profile_screen.dart';
 
 class Home extends StatefulWidget {

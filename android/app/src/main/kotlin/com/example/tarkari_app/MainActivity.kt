@@ -1,4 +1,4 @@
-package com.example.tarkari_app
+package com.shopping.tarkari_app
 
 import io.flutter.embedding.android.FlutterActivity
 

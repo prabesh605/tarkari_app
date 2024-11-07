@@ -60,6 +60,22 @@ class ProductSubCategory {
       'materials': List<dynamic>.from(materials.map((item) => item.toJson())),
     };
   }
+
+  static const String kTableName = "ProductSubCategory";
+
+  static const String kTableCreationQuery = '''
+   CREATE TABLE $kTableName (
+   productSubCategoryID INTEGER PRIMARY KEY,
+   subCategoryName TEXT,
+   subCategoryCode TEXT
+   );
+   ''';
+
+  Map<String, dynamic> toDB() => {
+        'productSubCategoryID': productSubCategoryID,
+        'subCategoryName': subCategoryName,
+        'subCategoryCode': subCategoryCode,
+      };
 }
 
 class Material {
@@ -98,6 +114,19 @@ class Material {
       thumbnail: json['thumbnail'],
     );
   }
+  factory Material.fromDB(Map<String, dynamic> dbData) {
+    return Material(
+      materialInfoID: dbData['materialInfoID'],
+      fullName: dbData['fullName'],
+      code: dbData['code'],
+      productSubCategoryID: dbData['productSubCategoryID'],
+      smallestUnitID: dbData['smallestUnitID'],
+      smallestUnitName: dbData['smallestUnitName'],
+      status: dbData['status'],
+      publicPurchasePrice: dbData['publicPurchasePrice'],
+      thumbnail: dbData['thumbnail'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -112,4 +141,30 @@ class Material {
       'thumbnail': thumbnail,
     };
   }
+
+  static const String kTableName = "Material";
+  static const String kTableCreationQuery = '''
+    CREATE TABLE $kTableName (
+      materialInfoID INTEGER PRIMARY KEY,
+      fullName TEXT,
+      code TEXT,
+      productSubCategoryID INTEGER,
+      smallestUnitID INTEGER,
+      smallestUnitName TEXT,
+      status INTEGER,
+      publicPurchasePrice REAL,
+      thumbnail TEXT
+    );
+    ''';
+  Map<String, dynamic> toDB() => {
+        'materialInfoID': materialInfoID,
+        'fullName': fullName,
+        'code': code,
+        'productSubCategoryID': productSubCategoryID,
+        'smallestUnitID': smallestUnitID,
+        'smallestUnitName': smallestUnitName,
+        'status': status,
+        'publicPurchasePrice': publicPurchasePrice,
+        'thumbnail': thumbnail,
+      };
 }

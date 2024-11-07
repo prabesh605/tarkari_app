@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tarkari_app/core/models/response/response_status.dart';
 import 'package:tarkari_app/features/cart_screen/models/order_model.dart';
+import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/cart_screen/providers/order_provider.dart';
 import 'package:tarkari_app/features/home/home.dart';
 // import 'package:geolocator/geolocator.dart';
@@ -32,6 +34,7 @@ class CustomerForm extends HookConsumerWidget {
     String? latitude;
     String? longitude;
     ref.listen<ResponseStatus>(orderProvider, (previous, next) {
+      ref.read(cartProvider.notifier).clearCart();
       if (next is ResponseStatusSuccess) {
         showDialog(
           context: context,
@@ -66,6 +69,44 @@ class CustomerForm extends HookConsumerWidget {
         );
       }
     });
+    Future<void> _selectCurrentLocation(
+        WidgetRef ref, BuildContext context) async {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Location services are disabled.")),
+        );
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Location permissions are denied")),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text("Location permissions are permanently denied")),
+        );
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition();
+      LatLng currentLocation = LatLng(position.latitude, position.longitude);
+      ref.read(selectedLocationProvider.notifier).state = currentLocation;
+      ref.read(selectedMarkerProvider.notifier).state = Marker(
+        markerId: const MarkerId('current_location'),
+        position: currentLocation,
+        infoWindow: const InfoWindow(title: "Current Location"),
+      );
+    }
 
     return WillPopScope(
       onWillPop: () async {
@@ -135,9 +176,6 @@ class CustomerForm extends HookConsumerWidget {
                         fillColor: const Color(0xffA6E079).withOpacity(0.2),
                         filled: true,
                         labelText: 'Email Address'),
-                    validator: (value) => value!.isEmpty
-                        ? 'Please enter your email address'
-                        : null,
                   ),
                   const SizedBox(
                     height: 20,
@@ -166,28 +204,49 @@ class CustomerForm extends HookConsumerWidget {
                   const SizedBox(height: 10),
                   SizedBox(
                     height: 200,
-                    child: GoogleMap(
-                      onMapCreated: (GoogleMapController controller) {
-                        // Optional: You can store the map controller if needed
-                      },
-                      onTap: (LatLng position) {
-                        ref.read(selectedLocationProvider.notifier).state =
-                            position;
-                        ref.read(selectedMarkerProvider.notifier).state =
-                            Marker(
-                          markerId: const MarkerId('selected_location'),
-                          position: position,
-                          infoWindow:
-                              const InfoWindow(title: "Selected Location"),
-                        );
-                        latitude = "${position.latitude}";
-                        longitude = "${position.longitude}";
-                      },
-                      initialCameraPosition: const CameraPosition(
-                        target: LatLng(27.7172, 85.3240), // Default location
-                        zoom: 10,
-                      ),
-                      markers: selectedMarker != null ? {selectedMarker!} : {},
+                    child: Stack(
+                      children: [
+                        GoogleMap(
+                          onMapCreated: (GoogleMapController controller) {},
+                          onTap: (LatLng position) {
+                            ref.read(selectedLocationProvider.notifier).state =
+                                position;
+                            ref.read(selectedMarkerProvider.notifier).state =
+                                Marker(
+                              markerId: const MarkerId('selected_location'),
+                              position: position,
+                              infoWindow:
+                                  const InfoWindow(title: "Selected Location"),
+                            );
+                            latitude = "${position.latitude}";
+                            longitude = "${position.longitude}";
+                          },
+                          initialCameraPosition: const CameraPosition(
+                            target: LatLng(27.7172, 85.3240),
+                            zoom: 10,
+                          ),
+                          markers:
+                              selectedMarker != null ? {selectedMarker!} : {},
+                        ),
+                        Positioned(
+                          top: 10,
+                          right: 10,
+                          child: ElevatedButton(
+                            onPressed: () =>
+                                _selectCurrentLocation(ref, context),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              "Select Current Location",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Spacer(),

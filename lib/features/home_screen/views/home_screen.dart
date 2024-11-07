@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
 import 'package:tarkari_app/core/widgets/drawer.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tarkari_app/data_sync/db/sqflite_db.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
 import 'package:tarkari_app/features/home_screen/providers/items_provider.dart';
@@ -62,7 +63,7 @@ class HomeScreen extends HookConsumerWidget {
                       children: [
                         Text("Save up to 50% off on your first order"),
                         Text(
-                          "अब तपाईंहरूलाई ताजा, सस्तो, लोकल तथा बिदेशी तरकारीहरू, जस्तै: आलु, प्याज, अदुवा, लसुन, गोलभेडा आदि, सजिलै छानी-छानी घरमै बसिबसी अर्डर गर्न सक्नुहुन्छ। त्यो पनि बिना कुनै डेलिभरी शुल्क!।",
+                          "अब तपाईंहरूलाई ताजा, सस्तो, तथा लोकल तरकारीहरू, जस्तै: आलु, प्याज, अदुवा, लसुन, गोलभेडा आदि, सजिलै छानी-छानी घरमै बसिबसी अर्डर गर्न सक्नुहुन्छ। त्यो पनि बिना कुनै डेलिभरी शुल्क!।",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -90,7 +91,7 @@ Widget _buildInitialState() {
 }
 
 Widget _buildErrorState(String error) {
-  return Center(child: Text('Error: $error'));
+  return Center(child: Text('Something wrong while fetching data: $error'));
 }
 
 Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
@@ -151,7 +152,8 @@ Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
                                 'Price: ${material.publicPurchasePrice} /Per Kg'),
                             ElevatedButton.icon(
                               iconAlignment: IconAlignment.end,
-                              onPressed: () {
+                              onPressed: () async {
+                                await LocalDatabase().addCartItem(material);
                                 ref
                                     .read(cartProvider.notifier)
                                     .addToCart(material);
