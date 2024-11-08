@@ -11,7 +11,7 @@ class ProfileScreen extends StatelessWidget {
           title: const Text("Profile"),
           backgroundColor: const Color(0xffA6E079),
         ),
-        drawer: const DrawerWidget(),
+        // drawer: const DrawerWidget(),
         body: const Center(
           child: Text("Not Available right now"),
         )

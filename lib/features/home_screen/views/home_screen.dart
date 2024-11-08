@@ -36,7 +36,7 @@ class HomeScreen extends HookConsumerWidget {
           ),
         ],
       ),
-      drawer: const DrawerWidget(),
+      // drawer: const DrawerWidget(),
       body: Column(
         children: [
           Visibility(
