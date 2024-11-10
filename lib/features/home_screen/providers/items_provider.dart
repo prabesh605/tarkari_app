@@ -15,9 +15,9 @@ class ItemsProvider extends StateNotifier<ResponseStatus> {
 
   Future<void> getItemsData() async {
     state = const ResponseStatus.progress();
-
     try {
       final response = await ref.read(itemsService).getItems();
+
       if (response.success) {
         state = ResponseStatus.success(data: response);
       } else {

@@ -12,6 +12,10 @@ class ItemsService {
       final response = await BaseClient.instance.get(
         ApiConstants.getMaterialItems,
       );
+      if (response == null) {
+        throw Exception("Failed to load items; response is null.");
+      }
+
       return ProductResponse.fromJson(response);
     } catch (e) {
       rethrow;

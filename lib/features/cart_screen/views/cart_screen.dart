@@ -16,7 +16,6 @@ final totalCostProvider = Provider<double>((ref) {
     final itemCount = ref.watch(itemCountProvider(i));
     totalCost += cartItems[i].publicPurchasePrice * itemCount;
   }
-
   return totalCost;
 });
 
@@ -39,38 +38,49 @@ class CartScreen extends HookConsumerWidget {
               return Stack(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.shopping_cart),
+                    icon: const Icon(
+                      Icons.delete_forever_outlined,
+                      color: Colors.red,
+                    ),
                     onPressed: () {
+                      if (itemCount > 0) {
+                        ref.watch(cartProvider.notifier).clearCart();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Cart is Empty")),
+                        );
+                      }
+
                       // ref.watch(cartProvider.notifier).checkCartStatus();
                     },
                   ),
-                  if (itemCount > 0)
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 20,
-                          minHeight: 20,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '$itemCount',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
+                  // if (itemCount > 0)
+                  //   Positioned(
+                  //     right: 8,
+                  //     top: 8,
+                  //     child: Container(
+                  //       padding: const EdgeInsets.all(6),
+                  //       decoration: const BoxDecoration(
+                  //         color: Colors.red,
+                  //         shape: BoxShape.circle,
+                  //       ),
+                  //       constraints: const BoxConstraints(
+                  //         minWidth: 20,
+                  //         minHeight: 20,
+                  //       ),
+                  //       child: Center(
+                  //         child: Text(
+                  //           '$itemCount',
+                  //           style: const TextStyle(
+                  //             color: Colors.white,
+                  //             fontSize: 12,
+                  //             fontWeight: FontWeight.bold,
+                  //           ),
+                  //           textAlign: TextAlign.center,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
                 ],
               );
             },
@@ -120,8 +130,16 @@ class CartScreen extends HookConsumerWidget {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.network(
-                                      ApiConstants.baseurl + material.thumbnail,
-                                      height: 100),
+                                    ApiConstants.baseurl + material.thumbnail,
+                                    height: 100,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                        size: 100,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
@@ -130,6 +148,7 @@ class CartScreen extends HookConsumerWidget {
                               style: const TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
+                            Text("${material.publicPurchasePrice}/per Kg"),
                             Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Row(

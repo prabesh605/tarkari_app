@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
+import 'package:tarkari_app/core/models/response/response_status.dart';
+import 'package:tarkari_app/core/models/services/network/network_connection.dart';
 import 'package:tarkari_app/core/widgets/drawer.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tarkari_app/core/widgets/toast.dart';
 import 'package:tarkari_app/data_sync/db/sqflite_db.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
@@ -19,41 +22,58 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isConnected = useState<bool>(true);
     useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(itemsProvider.notifier).getItemsData();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        bool connectionStatus = await NetworkConnectionCheck.checkConnection();
+        isConnected.value = connectionStatus;
+
+        if (connectionStatus) {
+          final itemsState = ref.read(itemsProvider);
+          if (itemsState is! ResponseStatusProgress &&
+              itemsState is! ResponseStatusSuccess) {
+            ref.read(itemsProvider.notifier).getItemsData();
+          }
+        }
       });
     }, []);
+    // useEffect(() {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     ref.read(itemsProvider.notifier).getItemsData();
+    //   });
+    // }, []);
     final isVisible = ref.watch(visibilityProvider);
     final itemsProviderState = ref.watch(itemsProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("A1 Tarkari shop"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
+        actions: const [
+          // IconButton(
+          //   icon: const Icon(Icons.search),
+          //   onPressed: () {},
+          // ),
         ],
       ),
       // drawer: const DrawerWidget(),
       body: Column(
         children: [
-          Visibility(
-            visible: isVisible,
-            child: Stack(
+          if (isVisible)
+            Stack(
               children: [
-                Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      onPressed: () {
-                        ref
-                            .read(visibilityProvider.notifier)
-                            .update((state) => false);
-                      },
-                      icon: const Icon(Icons.close),
-                    )),
+                // Positioned(
+                //   top: 0,
+                //   right: 0,
+                //   child: IconButton(
+                //     onPressed: () {
+                //       ref.read(visibilityProvider.notifier).state = false;
+                //       // ref
+                //       //     .read(visibilityProvider.notifier)
+                //       //     .update((state) => false);
+                //     },
+                //     icon: const Icon(Icons.close),
+                //   ),
+                // ),
+
                 Container(
                   color: const Color(0xffA6E079).withOpacity(0.2),
                   padding: const EdgeInsets.all(16.0),
@@ -72,7 +92,19 @@ class HomeScreen extends HookConsumerWidget {
                 ),
               ],
             ),
-          ),
+          if (!isConnected.value)
+            Container(
+              color: Colors.red.withOpacity(0.2),
+              padding: const EdgeInsets.all(16.0),
+              child: const Text(
+                'No internet connection. Please check your network.',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
+              ),
+            ),
           itemsProviderState.when(
             initial: () => _buildInitialState(),
             progress: () => const Center(child: CircularProgressIndicator()),
@@ -91,7 +123,11 @@ Widget _buildInitialState() {
 }
 
 Widget _buildErrorState(String error) {
-  return Center(child: Text('Something wrong while fetching data: $error'));
+  return const Center(
+    child:
+        // Text('Something wrong while fetching data'),
+        Text(''),
+  );
 }
 
 Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
@@ -153,15 +189,30 @@ Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
                             ElevatedButton.icon(
                               iconAlignment: IconAlignment.end,
                               onPressed: () async {
-                                await LocalDatabase().addCartItem(material);
-                                ref
-                                    .read(cartProvider.notifier)
-                                    .addToCart(material);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                          '${material.fullName} added to cart!')),
-                                );
+                                // await LocalDatabase().addCartItem(material);
+                                final exists = ref.read(cartProvider).any(
+                                    (item) =>
+                                        item.materialInfoID ==
+                                        material.materialInfoID);
+                                if (exists) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Item already in cart!'),
+                                      backgroundColor: Colors.orange,
+                                    ),
+                                  );
+                                } else {
+                                  ref
+                                      .read(cartProvider.notifier)
+                                      .addToCart(material);
+                                  showSuccessToast(
+                                      '${material.fullName} added to cart!');
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   SnackBar(
+                                  //       content: Text(
+                                  //           '${material.fullName} added to cart!')),
+                                  // );
+                                }
                               },
                               label: const Text(
                                 "Add",
