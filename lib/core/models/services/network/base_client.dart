@@ -4,7 +4,6 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
 import 'package:tarkari_app/core/constants/storage_constants.dart';
 import 'package:tarkari_app/core/models/services/storage/sharedpref_helper.dart';
-
 import 'network_connection.dart';
 
 class BaseClient {
@@ -17,14 +16,17 @@ class BaseClient {
 
   void _setupAuthHeaderInterceptor() {
     //get token
-    _dio.interceptors.add(PrettyDioLogger(
+    _dio.interceptors.add(
+      PrettyDioLogger(
         requestHeader: true,
         requestBody: true,
         responseBody: true,
         responseHeader: false,
         error: true,
         compact: true,
-        maxWidth: 90));
+        maxWidth: 90,
+      ),
+    );
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (RequestOptions options, RequestInterceptorHandler r) async {

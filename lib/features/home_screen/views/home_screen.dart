@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
@@ -10,6 +12,7 @@ import 'package:tarkari_app/data_sync/db/sqflite_db.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
 import 'package:tarkari_app/features/home_screen/providers/items_provider.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 final visibilityProvider = StateProvider<bool>((ref) => true);
 
@@ -22,11 +25,30 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future<String?> getDeviceId() async {
+      final deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+        return androidInfo.id;
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        return iosInfo.identifierForVendor;
+      }
+      return null;
+    }
+
+    void displayDeviceId() async {
+      String? deviceId = await getDeviceId();
+      print('Device ID: $deviceId');
+    }
+
     final isConnected = useState<bool>(true);
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         bool connectionStatus = await NetworkConnectionCheck.checkConnection();
         isConnected.value = connectionStatus;
+        displayDeviceId();
 
         if (connectionStatus) {
           final itemsState = ref.read(itemsProvider);
@@ -195,12 +217,14 @@ Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
                                         item.materialInfoID ==
                                         material.materialInfoID);
                                 if (exists) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Item already in cart!'),
-                                      backgroundColor: Colors.orange,
-                                    ),
-                                  );
+                                  showErrorToast(
+                                      '${material.fullName} already added to cart!');
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   const SnackBar(
+                                  //     content: Text('Item already in cart!'),
+                                  //     backgroundColor: Colors.orange,
+                                  //   ),
+                                  // );
                                 } else {
                                   ref
                                       .read(cartProvider.notifier)

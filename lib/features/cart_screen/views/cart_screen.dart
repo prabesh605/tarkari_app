@@ -92,7 +92,9 @@ class CartScreen extends HookConsumerWidget {
         children: [
           Expanded(
             child: cartItems.isEmpty
-                ? const Center(child: Text("Your cart is empty"))
+                ? const Center(
+                    child: Text("Your cart is empty"),
+                  )
                 : ListView.builder(
                     itemCount: cartItems.length,
                     itemBuilder: (context, index) {
