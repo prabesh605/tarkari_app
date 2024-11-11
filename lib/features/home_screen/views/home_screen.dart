@@ -48,7 +48,7 @@ class HomeScreen extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         bool connectionStatus = await NetworkConnectionCheck.checkConnection();
         isConnected.value = connectionStatus;
-        displayDeviceId();
+        // displayDeviceId();
 
         if (connectionStatus) {
           final itemsState = ref.read(itemsProvider);

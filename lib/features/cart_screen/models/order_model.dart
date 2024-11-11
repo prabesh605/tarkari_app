@@ -9,6 +9,7 @@ class CustomerOrder {
 }
 
 class Mast {
+  final int orderInfoMasterID;
   final String fullname;
   final String mobileNo;
   final String address;
@@ -18,6 +19,7 @@ class Mast {
   final List<Detail> details;
 
   Mast({
+    required this.orderInfoMasterID,
     required this.fullname,
     required this.mobileNo,
     required this.address,
@@ -28,6 +30,7 @@ class Mast {
   });
 
   Map<String, dynamic> toJson() => {
+        "orderInfoMasterID": orderInfoMasterID,
         "fullname": fullname,
         "mobileNo": mobileNo,
         "address": address,
@@ -39,13 +42,24 @@ class Mast {
 }
 
 class Detail {
+  final int orderInfoDetailID;
+  final int orderInfoMasterID;
   final int materialInfoID;
+  final int measuringUnitID;
   final int quantity;
 
-  Detail({required this.materialInfoID, required this.quantity});
+  Detail(
+      {required this.orderInfoDetailID,
+      required this.orderInfoMasterID,
+      required this.measuringUnitID,
+      required this.materialInfoID,
+      required this.quantity});
 
   Map<String, dynamic> toJson() => {
+        "orderInfoDetailID": orderInfoDetailID,
+        "orderInfoMasterID": orderInfoMasterID,
         "materialInfoID": materialInfoID,
+        "measuringUnitID": measuringUnitID,
         "quantity": quantity,
       };
 }

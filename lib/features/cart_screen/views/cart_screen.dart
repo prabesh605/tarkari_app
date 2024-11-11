@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
 import 'package:tarkari_app/core/widgets/drawer.dart';
+import 'package:tarkari_app/core/widgets/toast.dart';
 import 'package:tarkari_app/features/cart_screen/models/order_model.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/cart_screen/views/customer_form_screen.dart';
@@ -45,10 +47,14 @@ class CartScreen extends HookConsumerWidget {
                     onPressed: () {
                       if (itemCount > 0) {
                         ref.watch(cartProvider.notifier).clearCart();
+                        showSuccessToast("All items in Cart is removed",
+                            gravity: ToastGravity.CENTER);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Cart is Empty")),
-                        );
+                        showErrorToast("Cart is Empty",
+                            gravity: ToastGravity.TOP);
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   const SnackBar(content: Text("Cart is Empty")),
+                        // );
                       }
 
                       // ref.watch(cartProvider.notifier).checkCartStatus();
@@ -252,14 +258,16 @@ class CartScreen extends HookConsumerWidget {
                                 builder: (context) =>
                                     CustomerForm(details: orderDetails)));
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Add Items in Cart to procceed")),
-                        );
+                        showErrorToast("Add Items in Cart to procceed",
+                            gravity: ToastGravity.CENTER);
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   const SnackBar(
+                        //       content: Text("Add Items in Cart to procceed")),
+                        // );
                       }
                     },
                     child: const Text(
-                      "Oder Now",
+                      "Order Now",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -276,7 +284,10 @@ List<Detail> createOrderDetails(WidgetRef ref) {
   return cartItems.map((item) {
     final itemCount = ref.read(itemCountProvider(cartItems.indexOf(item)));
     return Detail(
+      orderInfoDetailID: 0,
+      orderInfoMasterID: 0,
       quantity: itemCount,
+      measuringUnitID: item.smallestUnitID,
       materialInfoID: item.materialInfoID,
     );
   }).toList();

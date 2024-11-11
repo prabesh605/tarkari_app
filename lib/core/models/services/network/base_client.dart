@@ -71,6 +71,7 @@ class BaseClient {
         );
         return res.data;
       } on DioException catch (e) {
+        print(e.toString());
         // throw e.toNetworkException();
       } catch (e) {
         rethrow;
