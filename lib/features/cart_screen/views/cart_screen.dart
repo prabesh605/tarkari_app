@@ -47,6 +47,10 @@ class CartScreen extends HookConsumerWidget {
                     onPressed: () {
                       if (itemCount > 0) {
                         ref.watch(cartProvider.notifier).clearCart();
+
+                        for (var i = 0; i < cartItems.length; i++) {
+                          ref.read(itemCountProvider(i).notifier).state = 1;
+                        }
                         showSuccessToast("All items in Cart is removed",
                             gravity: ToastGravity.CENTER);
                       } else {
@@ -124,6 +128,9 @@ class CartScreen extends HookConsumerWidget {
                                   ref
                                       .watch(cartProvider.notifier)
                                       .removeFromCart(material);
+                                  ref
+                                      .read(itemCountProvider(index).notifier)
+                                      .state = 1;
                                 },
                                 child: const Icon(
                                   Icons.delete,
@@ -164,7 +171,7 @@ class CartScreen extends HookConsumerWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Price: ${material.publicPurchasePrice * itemCount}',
+                                    'Price: Rs. ${material.publicPurchasePrice * itemCount}',
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
@@ -180,15 +187,16 @@ class CartScreen extends HookConsumerWidget {
                                     child: Row(
                                       children: [
                                         IconButton(
-                                          iconSize: 20,
-                                          onPressed: () {
-                                            ref
-                                                .read(itemCountProvider(index)
-                                                    .notifier)
-                                                .state++;
-                                          },
-                                          icon: const Icon(Icons.add),
-                                        ),
+                                            icon: const Icon(Icons.remove),
+                                            onPressed: () {
+                                              if (itemCount > 1) {
+                                                ref
+                                                    .read(
+                                                        itemCountProvider(index)
+                                                            .notifier)
+                                                    .state--;
+                                              }
+                                            }),
                                         Container(
                                             padding: const EdgeInsets.all(10),
                                             decoration: BoxDecoration(
@@ -203,16 +211,15 @@ class CartScreen extends HookConsumerWidget {
                                                   fontSize: 18),
                                             )),
                                         IconButton(
-                                            icon: const Icon(Icons.remove),
-                                            onPressed: () {
-                                              if (itemCount > 1) {
-                                                ref
-                                                    .read(
-                                                        itemCountProvider(index)
-                                                            .notifier)
-                                                    .state--;
-                                              }
-                                            }),
+                                          iconSize: 20,
+                                          onPressed: () {
+                                            ref
+                                                .read(itemCountProvider(index)
+                                                    .notifier)
+                                                .state++;
+                                          },
+                                          icon: const Icon(Icons.add),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -230,16 +237,26 @@ class CartScreen extends HookConsumerWidget {
               width: double.infinity,
               height: 40,
               decoration: BoxDecoration(
-                // color: Colors.green.withOpacity(0.5),
-                border: Border.all(color: Colors.grey.withOpacity(0.5)),
-              ),
+                  // color: Colors.green.withOpacity(0.5),
+                  // border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                  ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Total Cost :${totalCost.toStringAsFixed(2)}",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(left: 10),
+                      height: 40,
+                      decoration: BoxDecoration(
+                        // color: Colors.green.withOpacity(0.5),
+                        border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                      ),
+                      child: Text(
+                        "Total Cost: Rs. ${totalCost.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(

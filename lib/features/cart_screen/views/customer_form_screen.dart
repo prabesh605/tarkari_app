@@ -47,8 +47,11 @@ class CustomerForm extends HookConsumerWidget {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Home()));
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Home()),
+                    (Route<dynamic> route) => false,
+                  );
                 },
                 child: const Text("OK"),
               ),

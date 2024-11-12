@@ -69,6 +69,7 @@ class HomeScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("A1 Tarkari shop"),
+        backgroundColor: const Color(0xffA6E079),
         actions: const [
           // IconButton(
           //   icon: const Icon(Icons.search),
@@ -79,41 +80,47 @@ class HomeScreen extends HookConsumerWidget {
       // drawer: const DrawerWidget(),
       body: Column(
         children: [
-          if (isVisible)
-            Stack(
-              children: [
-                // Positioned(
-                //   top: 0,
-                //   right: 0,
-                //   child: IconButton(
-                //     onPressed: () {
-                //       ref.read(visibilityProvider.notifier).state = false;
-                //       // ref
-                //       //     .read(visibilityProvider.notifier)
-                //       //     .update((state) => false);
-                //     },
-                //     icon: const Icon(Icons.close),
-                //   ),
-                // ),
-
-                Container(
+          isVisible
+              ? Container(
                   color: const Color(0xffA6E079).withOpacity(0.2),
                   padding: const EdgeInsets.all(16.0),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Save up to 50% off on your first order"),
-                        Text(
+                        // Align(
+                        //   alignment: Alignment.centerRight,
+                        //   child: IconButton(
+                        //     onPressed: () {
+                        //       ref.read(visibilityProvider.notifier).state =
+                        //           false;
+                        //     },
+                        //     icon: const Icon(Icons.close),
+                        //   ),
+                        // ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                                "Save up to 50% off on your first order"),
+                            IconButton(
+                              onPressed: () {
+                                ref.read(visibilityProvider.notifier).state =
+                                    false;
+                              },
+                              icon: const Icon(Icons.close),
+                            ),
+                          ],
+                        ),
+                        const Text(
                           "अब तपाईंहरूलाई ताजा, सस्तो, तथा लोकल तरकारीहरू, जस्तै: आलु, प्याज, अदुवा, लसुन, गोलभेडा आदि, सजिलै छानी-छानी घरमै बसिबसी अर्डर गर्न सक्नुहुन्छ। त्यो पनि बिना कुनै डेलिभरी शुल्क!।",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                )
+              : Container(),
           if (!isConnected.value)
             Container(
               color: Colors.red.withOpacity(0.2),

@@ -16,7 +16,7 @@ class Home extends HookConsumerWidget {
     final List<Widget> _pages = [
       const HomeScreen(),
       const CartScreen(),
-      const ProfileScreen(),
+      // const ProfileScreen(),
     ];
 
     final itemCount = ref.watch(cartProvider).length;
@@ -64,10 +64,10 @@ class Home extends HookConsumerWidget {
             ),
             label: 'Cart',
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          // const BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Profile',
+          // ),
         ],
         currentIndex: _selectedIndex.value,
         selectedItemColor: Colors.red,
