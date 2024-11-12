@@ -237,26 +237,16 @@ class CartScreen extends HookConsumerWidget {
               width: double.infinity,
               height: 40,
               decoration: BoxDecoration(
-                  // color: Colors.green.withOpacity(0.5),
-                  // border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                  ),
+                // color: Colors.green.withOpacity(0.5),
+                border: Border.all(color: Colors.grey.withOpacity(0.5)),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 10),
-                      height: 40,
-                      decoration: BoxDecoration(
-                        // color: Colors.green.withOpacity(0.5),
-                        border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                      ),
-                      child: Text(
-                        "Total Cost: Rs. ${totalCost.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                  Text(
+                    "Total Cost: Rs. ${totalCost.toStringAsFixed(2)}",
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
