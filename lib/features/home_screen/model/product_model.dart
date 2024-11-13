@@ -32,7 +32,7 @@ class ProductSubCategory {
   final int productSubCategoryID;
   final String subCategoryName;
   final String subCategoryCode;
-  final List<Material> materials;
+  final List<Materials> materials;
 
   ProductSubCategory({
     required this.productSubCategoryID,
@@ -46,8 +46,8 @@ class ProductSubCategory {
       productSubCategoryID: json['productSubCategoryID'],
       subCategoryName: json['subCategoryName'],
       subCategoryCode: json['subCategoryCode'],
-      materials: List<Material>.from(
-        json['materials'].map((item) => Material.fromJson(item)),
+      materials: List<Materials>.from(
+        json['materials'].map((item) => Materials.fromJson(item)),
       ),
     );
   }
@@ -78,7 +78,7 @@ class ProductSubCategory {
       };
 }
 
-class Material {
+class Materials {
   final int materialInfoID;
   final String fullName;
   final String code;
@@ -89,7 +89,7 @@ class Material {
   final double publicPurchasePrice;
   final String thumbnail;
 
-  Material({
+  Materials({
     required this.materialInfoID,
     required this.fullName,
     required this.code,
@@ -101,8 +101,8 @@ class Material {
     required this.thumbnail,
   });
 
-  factory Material.fromJson(Map<String, dynamic> json) {
-    return Material(
+  factory Materials.fromJson(Map<String, dynamic> json) {
+    return Materials(
       materialInfoID: json['materialInfoID'],
       fullName: json['fullName'],
       code: json['code'],
@@ -114,8 +114,8 @@ class Material {
       thumbnail: json['thumbnail'],
     );
   }
-  factory Material.fromDB(Map<String, dynamic> dbData) {
-    return Material(
+  factory Materials.fromDB(Map<String, dynamic> dbData) {
+    return Materials(
       materialInfoID: dbData['materialInfoID'],
       fullName: dbData['fullName'],
       code: dbData['code'],

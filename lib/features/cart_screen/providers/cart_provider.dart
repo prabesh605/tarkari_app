@@ -2,17 +2,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/data_sync/db/sqflite_db.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
 
-final cartProvider = StateNotifierProvider<CartNotifier, List<Material>>((ref) {
+final cartProvider =
+    StateNotifierProvider<CartNotifier, List<Materials>>((ref) {
   return CartNotifier();
 });
 
-class CartNotifier extends StateNotifier<List<Material>> {
+class CartNotifier extends StateNotifier<List<Materials>> {
   CartNotifier() : super([]) {
     _loadCartItems();
   }
   final LocalDatabase _localDatabase = LocalDatabase();
 
-  Future<void> addToCart(Material material) async {
+  Future<void> addToCart(Materials material) async {
     final exists =
         state.any((item) => item.materialInfoID == material.materialInfoID);
 
@@ -27,7 +28,7 @@ class CartNotifier extends StateNotifier<List<Material>> {
     state = items;
   }
 
-  Future<void> removeFromCart(Material material) async {
+  Future<void> removeFromCart(Materials material) async {
     state = state
         .where((item) => item.materialInfoID != material.materialInfoID)
         .toList();
@@ -44,5 +45,5 @@ class CartNotifier extends StateNotifier<List<Material>> {
     state = [];
   }
 
-  List<Material> getCartItems() => state;
+  List<Materials> getCartItems() => state;
 }

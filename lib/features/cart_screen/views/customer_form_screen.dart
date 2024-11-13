@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tarkari_app/core/models/response/response_status.dart';
-import 'package:tarkari_app/core/widgets/toast.dart';
 import 'package:tarkari_app/features/cart_screen/models/order_model.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/cart_screen/providers/order_provider.dart';
@@ -118,21 +117,28 @@ class CustomerForm extends HookConsumerWidget {
                       height: 20,
                     ),
                     TextFormField(
-                      controller: cusPhone,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: const BorderSide(width: 0.5),
-                          ),
-                          fillColor: const Color(0xffA6E079).withOpacity(0.2),
-                          filled: true,
-                          labelText: 'Mobile Number*'),
-                      validator: (value) => value!.isEmpty
-                          ? 'Please enter your mobile number'
-                          : null,
-                    ),
+                        controller: cusPhone,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10)
+                        ],
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: const BorderSide(width: 0.5),
+                            ),
+                            fillColor: const Color(0xffA6E079).withOpacity(0.2),
+                            filled: true,
+                            labelText: 'Mobile Number*'),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your mobile number';
+                          } else if (value.length != 10) {
+                            return 'Mobile number must be 10 digits';
+                          }
+                          return null;
+                        }),
                     const SizedBox(
                       height: 20,
                     ),
@@ -174,7 +180,7 @@ class CustomerForm extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
-                      height: 200,
+                      height: 300,
                       child: Stack(
                         children: [
                           GoogleMap(

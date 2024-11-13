@@ -22,34 +22,35 @@ class LocalDatabase {
   Future _createDB(Database db, int version) async {
     try {
       await db.execute(ProductSubCategory.kTableCreationQuery);
-      await db.execute(Material.kTableCreationQuery);
+      await db.execute(Materials.kTableCreationQuery);
     } catch (e) {
       print(e.toString());
     }
   }
 
-  Future<void> addCartItem(Material material) async {
+  Future<void> addCartItem(Materials material) async {
     final db = await database;
     await db.insert(
-      Material.kTableName,
+      Materials.kTableName,
       material.toDB(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<List<Material>> getAllCartItems() async {
+  Future<List<Materials>> getAllCartItems() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(Material.kTableName);
+    final List<Map<String, dynamic>> maps =
+        await db.query(Materials.kTableName);
 
     return List.generate(maps.length, (i) {
-      return Material.fromDB(maps[i]);
+      return Materials.fromDB(maps[i]);
     });
   }
 
-  Future<void> removeCartItem(Material material) async {
+  Future<void> removeCartItem(Materials material) async {
     final db = await database;
     await db.delete(
-      Material.kTableName,
+      Materials.kTableName,
       where: 'materialInfoID = ?',
       whereArgs: [material.materialInfoID],
     );
@@ -58,11 +59,12 @@ class LocalDatabase {
   //for checking
   Future<void> printCartItems() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(Material.kTableName);
+    final List<Map<String, dynamic>> maps =
+        await db.query(Materials.kTableName);
 
     if (maps.isNotEmpty) {
       for (var item in maps) {
-        print(Material.fromDB(item));
+        print(Materials.fromDB(item));
       }
     } else {
       print('No items found in the cart.');
@@ -71,6 +73,6 @@ class LocalDatabase {
 
   Future<void> clearCart() async {
     final db = await database;
-    await db.delete(Material.kTableName);
+    await db.delete(Materials.kTableName);
   }
 }

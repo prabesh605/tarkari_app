@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
@@ -13,6 +14,7 @@ import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
 import 'package:tarkari_app/features/home_screen/providers/items_provider.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:tarkari_app/features/item_screen/view/item_screen.dart';
 
 final visibilityProvider = StateProvider<bool>((ref) => true);
 
@@ -25,6 +27,15 @@ class HomeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentIndex = useState(0);
+
+    final List<String> imagePath = [
+      'assets/images/vegetable1.jpg',
+      'assets/images/vegetable2.jpg',
+      'assets/images/vegetable3.jpg',
+      'assets/images/vegetable4.jpg',
+      'assets/images/vegetable5.jpg',
+    ];
     Future<String?> getDeviceId() async {
       final deviceInfo = DeviceInfoPlugin();
       if (Platform.isAndroid) {
@@ -78,70 +89,140 @@ class HomeScreen extends HookConsumerWidget {
         ],
       ),
       // drawer: const DrawerWidget(),
-      body: Column(
-        children: [
-          isVisible
-              ? Container(
-                  color: const Color(0xffA6E079).withOpacity(0.2),
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Align(
-                        //   alignment: Alignment.centerRight,
-                        //   child: IconButton(
-                        //     onPressed: () {
-                        //       ref.read(visibilityProvider.notifier).state =
-                        //           false;
-                        //     },
-                        //     icon: const Icon(Icons.close),
-                        //   ),
-                        // ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                                "Save up to 50% off on your first order"),
-                            IconButton(
-                              onPressed: () {
-                                ref.read(visibilityProvider.notifier).state =
-                                    false;
-                              },
-                              icon: const Icon(Icons.close),
-                            ),
-                          ],
-                        ),
-                        const Text(
-                          "अब तपाईंहरूलाई ताजा, सस्तो, तथा लोकल तरकारीहरू, जस्तै: आलु, प्याज, अदुवा, लसुन, गोलभेडा आदि, सजिलै छानी-छानी घरमै बसिबसी अर्डर गर्न सक्नुहुन्छ। त्यो पनि बिना कुनै डेलिभरी शुल्क!।",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            isVisible
+                ? Container(
+                    color: const Color(0xffA6E079).withOpacity(0.2),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Align(
+                          //   alignment: Alignment.centerRight,
+                          //   child: IconButton(
+                          //     onPressed: () {
+                          //       ref.read(visibilityProvider.notifier).state =
+                          //           false;
+                          //     },
+                          //     icon: const Icon(Icons.close),
+                          //   ),
+                          // ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                  "Save up to 50% off on your first order"),
+                              IconButton(
+                                onPressed: () {
+                                  ref.read(visibilityProvider.notifier).state =
+                                      false;
+                                },
+                                icon: const Icon(Icons.close),
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            "अब तपाईंहरूलाई ताजा, सस्तो, तथा लोकल तरकारीहरू, जस्तै: आलु, प्याज, अदुवा, लसुन, गोलभेडा आदि, सजिलै छानी-छानी घरमै बसिबसी अर्डर गर्न सक्नुहुन्छ। त्यो पनि बिना कुनै डेलिभरी शुल्क!।",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
+                  )
+                : Container(),
+            if (!isConnected.value)
+              Container(
+                color: Colors.red.withOpacity(0.2),
+                padding: const EdgeInsets.all(16.0),
+                child: const Text(
+                  'No internet connection. Please check your network.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
                   ),
-                )
-              : Container(),
-          if (!isConnected.value)
-            Container(
-              color: Colors.red.withOpacity(0.2),
-              padding: const EdgeInsets.all(16.0),
-              child: const Text(
-                'No internet connection. Please check your network.',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
                 ),
               ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              height: 220,
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: const Color(0xffA6E079).withOpacity(0.4),
+                    width: 1.0),
+                color: const Color(0xffA6E079).withOpacity(0.2),
+              ),
+              child: Column(
+                children: [
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 180.0,
+                      autoPlay: true,
+                      disableCenter: true,
+                      enlargeCenterPage: true,
+                      aspectRatio: 16 / 9,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayAnimationDuration:
+                          const Duration(milliseconds: 800),
+                      viewportFraction: 1.0,
+                      onPageChanged: (index, reason) {
+                        currentIndex.value = index;
+                      },
+                    ),
+                    items: imagePath.map((path) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                path,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        imagePath.length,
+                        (index) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          width: currentIndex.value == index ? 12 : 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: currentIndex.value == index
+                                ? Colors.green
+                                : Colors.grey,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          itemsProviderState.when(
-            initial: () => _buildInitialState(),
-            progress: () => const Center(child: CircularProgressIndicator()),
-            error: (error) => _buildErrorState(error.toString()),
-            success: (productResponse) =>
-                _buildProductList(productResponse, ref),
-          ),
-        ],
+            itemsProviderState.when(
+              initial: () => _buildInitialState(),
+              progress: () => const Center(child: CircularProgressIndicator()),
+              error: (error) => _buildErrorState(error.toString()),
+              success: (productResponse) =>
+                  _buildProductList(productResponse, ref),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -160,34 +241,46 @@ Widget _buildErrorState(String error) {
 }
 
 Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
-  return Expanded(
-    child: ListView.builder(
-      itemCount: productResponse.data.length,
-      itemBuilder: (context, index) {
-        final subCategory = productResponse.data[index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Subcategory title
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              child: Text(
-                subCategory.subCategoryName,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+  return ListView.builder(
+    physics: const NeverScrollableScrollPhysics(),
+    shrinkWrap: true,
+    itemCount: productResponse.data.length,
+    itemBuilder: (context, index) {
+      final subCategory = productResponse.data[index];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Subcategory title
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            child: Text(
+              subCategory.subCategoryName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
+          ),
 
-            Column(
-              children: subCategory.materials.map((material) {
-                return Container(
+          Column(
+            children: subCategory.materials.map((material) {
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ItemScreen(material, subCategory.subCategoryName),
+                    ),
+                  );
+                },
+                child: Container(
                   margin:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xffA6E079).withOpacity(0.2),
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Column(
@@ -198,8 +291,10 @@ Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                                ApiConstants.baseurl + material.thumbnail,
-                                height: 200),
+                              ApiConstants.baseurl + material.thumbnail,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -226,23 +321,12 @@ Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
                                 if (exists) {
                                   showErrorToast(
                                       '${material.fullName} already added to cart!');
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   const SnackBar(
-                                  //     content: Text('Item already in cart!'),
-                                  //     backgroundColor: Colors.orange,
-                                  //   ),
-                                  // );
                                 } else {
                                   ref
                                       .read(cartProvider.notifier)
                                       .addToCart(material);
                                   showSuccessToast(
                                       '${material.fullName} added to cart!');
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   SnackBar(
-                                  //       content: Text(
-                                  //           '${material.fullName} added to cart!')),
-                                  // );
                                 }
                               },
                               label: const Text(
@@ -256,12 +340,12 @@ Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
                       ),
                     ],
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        );
-      },
-    ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      );
+    },
   );
 }
