@@ -102,8 +102,34 @@ class Materials {
     required this.status,
     required this.publicPurchasePrice,
     required this.thumbnail,
-    this.itemCount = 0,
+    this.itemCount = 1,
   });
+
+  Materials copyWith({
+    int? materialInfoID,
+    String? fullName,
+    String? code,
+    int? productSubCategoryID,
+    int? smallestUnitID,
+    String? smallestUnitName,
+    int? status,
+    double? publicPurchasePrice,
+    String? thumbnail,
+    int? itemCount,
+  }) {
+    return Materials(
+      materialInfoID: materialInfoID ?? this.materialInfoID,
+      fullName: fullName ?? this.fullName,
+      code: code ?? this.code,
+      productSubCategoryID: productSubCategoryID ?? this.productSubCategoryID,
+      smallestUnitID: smallestUnitID ?? this.smallestUnitID,
+      smallestUnitName: smallestUnitName ?? this.smallestUnitName,
+      status: status ?? this.status,
+      publicPurchasePrice: publicPurchasePrice ?? this.publicPurchasePrice,
+      thumbnail: thumbnail ?? this.thumbnail,
+      itemCount: itemCount ?? this.itemCount,
+    );
+  }
 
   factory Materials.fromJson(Map<String, dynamic> json) {
     return Materials(

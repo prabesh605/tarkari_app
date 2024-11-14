@@ -23,6 +23,16 @@ class CartNotifier extends StateNotifier<List<Materials>> {
     }
   }
 
+  void updateItemCount(Materials item, int newCount) {
+    state = [
+      for (var cartItem in state)
+        if (cartItem == item)
+          cartItem.copyWith(itemCount: newCount)
+        else
+          cartItem
+    ];
+  }
+
   Future<void> _loadCartItems() async {
     final items = await _localDatabase.getAllCartItems();
     state = items;
