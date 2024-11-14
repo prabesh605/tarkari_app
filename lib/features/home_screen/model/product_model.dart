@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ProductResponse {
   final bool success;
   final String? message;
@@ -88,6 +90,7 @@ class Materials {
   final int status;
   final double publicPurchasePrice;
   final String thumbnail;
+  final int itemCount;
 
   Materials({
     required this.materialInfoID,
@@ -99,33 +102,34 @@ class Materials {
     required this.status,
     required this.publicPurchasePrice,
     required this.thumbnail,
+    this.itemCount = 0,
   });
 
   factory Materials.fromJson(Map<String, dynamic> json) {
     return Materials(
-      materialInfoID: json['materialInfoID'],
-      fullName: json['fullName'],
-      code: json['code'],
-      productSubCategoryID: json['productSubCategoryID'],
-      smallestUnitID: json['smallestUnitID'],
-      smallestUnitName: json['smallestUnitName'],
-      status: json['status'],
-      publicPurchasePrice: json['publicPurchasePrice'],
-      thumbnail: json['thumbnail'],
-    );
+        materialInfoID: json['materialInfoID'],
+        fullName: json['fullName'],
+        code: json['code'],
+        productSubCategoryID: json['productSubCategoryID'],
+        smallestUnitID: json['smallestUnitID'],
+        smallestUnitName: json['smallestUnitName'],
+        status: json['status'],
+        publicPurchasePrice: json['publicPurchasePrice'],
+        thumbnail: json['thumbnail'],
+        itemCount: json['itemCount'] ?? 0);
   }
   factory Materials.fromDB(Map<String, dynamic> dbData) {
     return Materials(
-      materialInfoID: dbData['materialInfoID'],
-      fullName: dbData['fullName'],
-      code: dbData['code'],
-      productSubCategoryID: dbData['productSubCategoryID'],
-      smallestUnitID: dbData['smallestUnitID'],
-      smallestUnitName: dbData['smallestUnitName'],
-      status: dbData['status'],
-      publicPurchasePrice: dbData['publicPurchasePrice'],
-      thumbnail: dbData['thumbnail'],
-    );
+        materialInfoID: dbData['materialInfoID'],
+        fullName: dbData['fullName'],
+        code: dbData['code'],
+        productSubCategoryID: dbData['productSubCategoryID'],
+        smallestUnitID: dbData['smallestUnitID'],
+        smallestUnitName: dbData['smallestUnitName'],
+        status: dbData['status'],
+        publicPurchasePrice: dbData['publicPurchasePrice'],
+        thumbnail: dbData['thumbnail'],
+        itemCount: dbData['itemCount']);
   }
 
   Map<String, dynamic> toJson() {
@@ -139,6 +143,7 @@ class Materials {
       'status': status,
       'publicPurchasePrice': publicPurchasePrice,
       'thumbnail': thumbnail,
+      'itemCount': itemCount
     };
   }
 
@@ -153,7 +158,8 @@ class Materials {
       smallestUnitName TEXT,
       status INTEGER,
       publicPurchasePrice REAL,
-      thumbnail TEXT
+      thumbnail TEXT,
+      itemCount INTEGER
     );
     ''';
   Map<String, dynamic> toDB() => {
@@ -166,5 +172,6 @@ class Materials {
         'status': status,
         'publicPurchasePrice': publicPurchasePrice,
         'thumbnail': thumbnail,
+        'itemCount': itemCount
       };
 }

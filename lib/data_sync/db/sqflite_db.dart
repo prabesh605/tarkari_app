@@ -16,7 +16,11 @@ class LocalDatabase {
   Future _initializedDB(String filePath) async {
     final dbpath = await getDatabasesPath();
     final path = join(dbpath, filePath);
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(
+      path,
+      version: 3,
+      onCreate: _createDB,
+    );
   }
 
   Future _createDB(Database db, int version) async {

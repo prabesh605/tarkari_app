@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
 import 'package:tarkari_app/core/widgets/toast.dart';
@@ -26,16 +27,22 @@ class ItemScreen extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: .5),
+            ),
             alignment: Alignment.center,
             height: 260,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                ApiConstants.baseurl + material.thumbnail,
-                // height: 200,
-                fit: BoxFit.cover,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  ApiConstants.baseurl + material.thumbnail,
+                  // height: 200,
+                  fit: BoxFit.cover,
+                ),
+                // child: Image.asset('assets/images/sample.jpg'),
               ),
-              // child: Image.asset('assets/images/sample.jpg'),
             ),
           ),
           const SizedBox(
@@ -164,8 +171,21 @@ class ItemScreen extends HookConsumerWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    ref.read(cartProvider.notifier).addToCart(material);
-                    showSuccessToast('${material.fullName} added to cart!');
+                    final updatedMaterial = Materials(
+                      materialInfoID: material.materialInfoID,
+                      fullName: material.fullName,
+                      code: material.code,
+                      productSubCategoryID: material.productSubCategoryID,
+                      smallestUnitID: material.smallestUnitID,
+                      smallestUnitName: material.smallestUnitName,
+                      status: material.status,
+                      publicPurchasePrice: material.publicPurchasePrice,
+                      thumbnail: material.thumbnail,
+                      itemCount: itemcounter.value,
+                    );
+                    ref.read(cartProvider.notifier).addToCart(updatedMaterial);
+                    showSuccessToast('${material.fullName} added to cart!',
+                        gravity: ToastGravity.TOP);
                   },
                   child: Container(
                     width: 50,

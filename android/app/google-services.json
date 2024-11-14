@@ -2,12 +2,31 @@
   "project_info": {
     "project_number": "792929938644",
     "project_id": "tarkari-6d936",
-    "storage_bucket": "tarkari-6d936.appspot.com"
+    "storage_bucket": "tarkari-6d936.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:792929938644:android:c66d9ba1ac105c19dddf41",
+        "android_client_info": {
+          "package_name": "com.example.tarkari_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5PcEKq07OBDq14ZvDno0okkLpU-86XTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792929938644:android:ab54189b01f9bb2edddf41",
         "android_client_info": {
           "package_name": "com.shopping.tarkari_app"
         }
