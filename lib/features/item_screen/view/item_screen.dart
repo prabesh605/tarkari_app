@@ -20,16 +20,18 @@ class ItemScreen extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 240, 223),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 230, 240, 223),
+        backgroundColor: Colors.green,
+        // backgroundColor: const Color.fromARGB(255, 230, 240, 223),
         title: const Text("Product Details"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: .5),
-            ),
+            // decoration: BoxDecoration(
+            //   border: Border.all(color: Colors.black, width: .5),
+            // ),
+            margin: const EdgeInsets.symmetric(vertical: 20),
             alignment: Alignment.center,
             height: 260,
             child: Padding(
@@ -94,11 +96,11 @@ class ItemScreen extends HookConsumerWidget {
                                   icon: const Icon(Icons.remove),
                                   onPressed: () {
                                     if (itemcounter.value > 1) {
-                                      // itemcounter.value--;
-                                      ref
-                                          .read(cartProvider.notifier)
-                                          .updateItemCount(
-                                              material, material.itemCount - 1);
+                                      itemcounter.value--;
+                                      // ref
+                                      //     .read(cartProvider.notifier)
+                                      //     .updateItemCount(
+                                      //         material, material.itemCount - 1);
                                     }
                                   }),
                             ),
@@ -107,8 +109,8 @@ class ItemScreen extends HookConsumerWidget {
                               padding: const EdgeInsets.all(10),
                               child: Center(
                                 child: Text(
-                                  "${material.itemCount}",
-                                  // "${itemcounter.value}",
+                                  // "${material.itemCount}",
+                                  "${itemcounter.value}",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
@@ -125,11 +127,11 @@ class ItemScreen extends HookConsumerWidget {
                                 iconSize: 20,
                                 onPressed: () {
                                   if (itemcounter.value < 10) {
-                                    // itemcounter.value++;
-                                    ref
-                                        .read(cartProvider.notifier)
-                                        .updateItemCount(
-                                            material, material.itemCount + 1);
+                                    itemcounter.value++;
+                                    // ref
+                                    //     .read(cartProvider.notifier)
+                                    //     .updateItemCount(
+                                    //         material, material.itemCount + 1);
                                   }
                                 },
                                 icon: const Icon(Icons.add),

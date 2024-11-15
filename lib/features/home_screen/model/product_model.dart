@@ -142,7 +142,7 @@ class Materials {
         status: json['status'],
         publicPurchasePrice: json['publicPurchasePrice'],
         thumbnail: json['thumbnail'],
-        itemCount: json['itemCount'] ?? 0);
+        itemCount: json['itemCount'] ?? 1);
   }
   factory Materials.fromDB(Map<String, dynamic> dbData) {
     return Materials(

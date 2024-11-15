@@ -4,11 +4,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
 import 'package:tarkari_app/core/widgets/drawer.dart';
 import 'package:tarkari_app/core/widgets/toast.dart';
+import 'package:tarkari_app/data_sync/db/sqflite_db.dart';
 import 'package:tarkari_app/features/cart_screen/models/order_model.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/cart_screen/views/customer_form_screen.dart';
 
-final itemCountProvider = StateProvider.family<int, int>((ref, index) => 1);
+// final itemCountProvider = StateProvider.family<int, int>((ref, index) => 1);
+final itemCountProvider = StateProvider.family<int, int>((ref, index) {
+  final cartItems = ref.watch(cartProvider);
+  return cartItems[index].itemCount;
+});
 
 final totalCostProvider = Provider<double>((ref) {
   final cartItems = ref.watch(cartProvider);
@@ -26,6 +31,7 @@ class CartScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final LocalDatabase _localDatabase = LocalDatabase();
     // final itemCount = ref.watch(itemCountProvider);
     final cartItems = ref.watch(cartProvider);
     final totalCost = ref.watch(totalCostProvider);
@@ -188,13 +194,17 @@ class CartScreen extends HookConsumerWidget {
                                       children: [
                                         IconButton(
                                             icon: const Icon(Icons.remove),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               if (itemCount > 1) {
                                                 ref
                                                     .read(
                                                         itemCountProvider(index)
                                                             .notifier)
                                                     .state--;
+                                                await _localDatabase
+                                                    .updateItemCountInDb(
+                                                        material.materialInfoID,
+                                                        itemCount - 1);
                                               }
                                             }),
                                         Container(
@@ -212,11 +222,15 @@ class CartScreen extends HookConsumerWidget {
                                             )),
                                         IconButton(
                                           iconSize: 20,
-                                          onPressed: () {
+                                          onPressed: () async {
                                             ref
                                                 .read(itemCountProvider(index)
                                                     .notifier)
                                                 .state++;
+                                            await _localDatabase
+                                                .updateItemCountInDb(
+                                                    material.materialInfoID,
+                                                    itemCount + 1);
                                           },
                                           icon: const Icon(Icons.add),
                                         ),

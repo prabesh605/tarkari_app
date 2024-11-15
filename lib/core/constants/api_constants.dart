@@ -4,4 +4,5 @@ class ApiConstants {
   static const String getMaterialItems =
       'api/MaterialInfo/GetMaterialForWebsite';
   static const String orderInfoMaster = "api/OrderInfoMaster/create";
+  static const String contactUs = 'api/ContactUs/Send';
 }

@@ -60,6 +60,16 @@ class LocalDatabase {
     );
   }
 
+  Future<void> updateItemCountInDb(int materialInfoID, int newCount) async {
+    final db = await database;
+    await db.update(
+      Materials.kTableName,
+      {'itemCount': newCount},
+      where: 'materialInfoID = ?',
+      whereArgs: [materialInfoID],
+    );
+  }
+
   //for checking
   Future<void> printCartItems() async {
     final db = await database;

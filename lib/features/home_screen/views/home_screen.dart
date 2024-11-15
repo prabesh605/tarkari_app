@@ -8,6 +8,7 @@ import 'package:tarkari_app/core/constants/api_constants.dart';
 import 'package:tarkari_app/core/models/response/response_status.dart';
 import 'package:tarkari_app/core/models/services/network/network_connection.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tarkari_app/core/widgets/drawer.dart';
 import 'package:tarkari_app/core/widgets/toast.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
@@ -84,7 +85,8 @@ class HomeScreen extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("A1 Tarkari shop"),
-        backgroundColor: const Color(0xffA6E079),
+        backgroundColor: Colors.green,
+        // backgroundColor: const Color(0xffA6E079),
         actions: const [
           // IconButton(
           //   icon: const Icon(Icons.search),
@@ -92,7 +94,7 @@ class HomeScreen extends HookConsumerWidget {
           // ),
         ],
       ),
-      // drawer: const DrawerWidget(),
+      drawer: const DrawerWidget(),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: SingleChildScrollView(
@@ -222,51 +224,56 @@ class HomeScreen extends HookConsumerWidget {
                   ],
                 ),
               ),
-              itemsProviderState.when(
-                initial: () => _buildInitialState(),
-                progress: () => Center(
-                  child: SkeletonLoader(
-                    builder: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: 5,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: 200,
-                              color: Colors.grey[300],
-                            ),
-                            const SizedBox(height: 10),
-                            SizedBox(
-                              height: 50,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 10,
-                                    color: Colors.grey[300],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Container(
-                                    height: 10,
-                                    width: 100,
-                                    color: Colors.grey[300],
-                                  ),
-                                ],
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                "Fresh Products",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: itemsProviderState.when(
+                  initial: () => _buildInitialState(),
+                  progress: () => Center(
+                    child: SkeletonLoader(
+                      builder: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: 6,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.grey[300],
+                                ),
+                                height: 200,
+                                width: double.infinity,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 10),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
+                  error: (error) => _buildErrorState(error.toString()),
+                  success: (productResponse) =>
+                      _buildProductList(productResponse, ref),
                 ),
-                error: (error) => _buildErrorState(error.toString()),
-                success: (productResponse) =>
-                    _buildProductList(productResponse, ref),
               ),
             ],
           ),
@@ -289,111 +296,255 @@ Widget _buildErrorState(String error) {
 }
 
 Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
-  return ListView.builder(
+  return GridView.builder(
     physics: const NeverScrollableScrollPhysics(),
     shrinkWrap: true,
-    itemCount: productResponse.data.length,
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: 0.8,
+    ),
+    itemCount: productResponse.data
+        .expand((subCategory) => subCategory.materials)
+        .toList()
+        .length,
     itemBuilder: (context, index) {
-      final subCategory = productResponse.data[index];
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Subcategory title
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            child: Text(
-              subCategory.subCategoryName,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+      final flattenedMaterials = productResponse.data
+          .expand((subCategory) => subCategory.materials)
+          .toList();
+      final material = flattenedMaterials[index];
+      final subCategoryName = productResponse.data
+          .firstWhere(
+            (subCategory) => subCategory.materials.contains(material),
+          )
+          .subCategoryName;
 
-          Column(
-            children: subCategory.materials.map((material) {
-              return InkWell(
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ItemScreen(material, subCategoryName
+                  //  material.subCategoryName,
+                  ),
+            ),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: const Color(0xffA6E079).withOpacity(0.2),
+            border: Border.all(color: Colors.grey),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  ApiConstants.baseurl + material.thumbnail,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                material.fullName,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                subCategoryName,
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'Price: ${material.publicPurchasePrice} /Per Kg',
+                style: const TextStyle(fontSize: 12),
+              ),
+              const Spacer(),
+              InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ItemScreen(material, subCategory.subCategoryName),
-                    ),
-                  );
+                  final exists = ref.read(cartProvider).any(
+                      (item) => item.materialInfoID == material.materialInfoID);
+                  if (exists) {
+                    showErrorToast(
+                        '${material.fullName} already added to cart!');
+                  } else {
+                    ref.read(cartProvider.notifier).addToCart(material);
+                    showSuccessToast('${material.fullName} added to cart!');
+                  }
                 },
                 child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: const Color(0xffA6E079).withOpacity(0.2),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              ApiConstants.baseurl + material.thumbnail,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                    padding: const EdgeInsets.all(5),
+                    width: double.infinity,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        border: Border.all(
+                          width: 1.0,
+                          color: Colors.green,
                         ),
-                      ),
-                      Text(
-                        material.fullName,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                'Price: ${material.publicPurchasePrice} /Per Kg'),
-                            ElevatedButton.icon(
-                              iconAlignment: IconAlignment.end,
-                              onPressed: () async {
-                                // await LocalDatabase().addCartItem(material);
-                                final exists = ref.read(cartProvider).any(
-                                    (item) =>
-                                        item.materialInfoID ==
-                                        material.materialInfoID);
-                                if (exists) {
-                                  showErrorToast(
-                                      '${material.fullName} already added to cart!');
-                                } else {
-                                  ref
-                                      .read(cartProvider.notifier)
-                                      .addToCart(material);
-                                  showSuccessToast(
-                                      '${material.fullName} added to cart!');
-                                }
-                              },
-                              label: const Text(
-                                "Add",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              icon: const Icon(Icons.shopping_cart),
-                            ),
-                          ],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Add to Cart",
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(
+                          Icons.shopping_cart,
+                          size: 14,
+                          color: Colors.white,
+                        )
+                      ],
+                    )),
+              ),
+              // ElevatedButton.icon(
+              //   iconAlignment: IconAlignment.end,
+              //   onPressed: () async {
+              //     // await LocalDatabase().addCartItem(material);
+              //     final exists = ref.read(cartProvider).any(
+              //         (item) => item.materialInfoID == material.materialInfoID);
+              //     if (exists) {
+              //       showErrorToast(
+              //           '${material.fullName} already added to cart!');
+              //     } else {
+              //       ref.read(cartProvider.notifier).addToCart(material);
+              //       showSuccessToast('${material.fullName} added to cart!');
+              //     }
+              //   },
+              //   label: const Text(
+              //     "Add",
+              //     style: TextStyle(fontSize: 18),
+              //   ),
+              //   icon: const Icon(Icons.shopping_cart),
+              // ),
+            ],
           ),
-        ],
+        ),
       );
     },
   );
 }
+// Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
+//   return ListView.builder(
+//     physics: const NeverScrollableScrollPhysics(),
+//     shrinkWrap: true,
+//     itemCount: productResponse.data.length,
+//     itemBuilder: (context, index) {
+//       final subCategory = productResponse.data[index];
+//       return Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           // Subcategory title
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+//             child: Text(
+//               subCategory.subCategoryName,
+//               style: const TextStyle(
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ),
+//           Column(
+//             children: subCategory.materials.map((material) {
+//               return InkWell(
+//                 onTap: () {
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                       builder: (context) =>
+//                           ItemScreen(material, subCategory.subCategoryName),
+//                     ),
+//                   );
+//                 },
+//                 child: Container(
+//                   margin:
+//                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+//                   padding: const EdgeInsets.all(8),
+//                   decoration: BoxDecoration(
+//                     borderRadius: BorderRadius.circular(8),
+//                     color: const Color(0xffA6E079).withOpacity(0.2),
+//                     border: Border.all(color: Colors.grey),
+//                   ),
+//                   child: Column(
+//                     children: [
+//                       Container(
+//                         padding: const EdgeInsets.symmetric(horizontal: 20),
+//                         child: Center(
+//                           child: ClipRRect(
+//                             borderRadius: BorderRadius.circular(10),
+//                             child: Image.network(
+//                               ApiConstants.baseurl + material.thumbnail,
+//                               height: 200,
+//                               fit: BoxFit.cover,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       Text(
+//                         material.fullName,
+//                         style: const TextStyle(
+//                             fontSize: 20, fontWeight: FontWeight.bold),
+//                       ),
+//                       Padding(
+//                         padding: const EdgeInsets.all(16.0),
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                           children: [
+//                             Text(
+//                                 'Price: ${material.publicPurchasePrice} /Per Kg'),
+//                             ElevatedButton.icon(
+//                               iconAlignment: IconAlignment.end,
+//                               onPressed: () async {
+//                                 // await LocalDatabase().addCartItem(material);
+//                                 final exists = ref.read(cartProvider).any(
+//                                     (item) =>
+//                                         item.materialInfoID ==
+//                                         material.materialInfoID);
+//                                 if (exists) {
+//                                   showErrorToast(
+//                                       '${material.fullName} already added to cart!');
+//                                 } else {
+//                                   ref
+//                                       .read(cartProvider.notifier)
+//                                       .addToCart(material);
+//                                   showSuccessToast(
+//                                       '${material.fullName} added to cart!');
+//                                 }
+//                               },
+//                               label: const Text(
+//                                 "Add",
+//                                 style: TextStyle(fontSize: 18),
+//                               ),
+//                               icon: const Icon(Icons.shopping_cart),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               );
+//             }).toList(),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
