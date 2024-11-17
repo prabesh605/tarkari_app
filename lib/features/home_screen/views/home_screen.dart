@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -227,9 +226,64 @@ class HomeScreen extends HookConsumerWidget {
               const SizedBox(
                 height: 10,
               ),
-              const Text(
-                "Fresh Products",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              // const Text(
+              //   "Fresh Products",
+              //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              // ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: itemsProviderState.when(
+                  initial: () => _buildInitialState(),
+                  progress: () => const Center(
+                    child: Text(''),
+                  ),
+                  error: (error) => _buildErrorState(error.toString()),
+                  success: (productResponse) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Categories",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 40,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: productResponse.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final categoryName =
+                                productResponse.data[index].subCategoryName;
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                  color:
+                                      const Color(0xffA6E079).withOpacity(0.2),
+                                  border: Border.all(color: Colors.black54),
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    categoryName,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 10,
@@ -296,148 +350,160 @@ Widget _buildErrorState(String error) {
 }
 
 Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
-  return GridView.builder(
-    physics: const NeverScrollableScrollPhysics(),
-    shrinkWrap: true,
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 0.8,
-    ),
-    itemCount: productResponse.data
-        .expand((subCategory) => subCategory.materials)
-        .toList()
-        .length,
-    itemBuilder: (context, index) {
-      final flattenedMaterials = productResponse.data
-          .expand((subCategory) => subCategory.materials)
-          .toList();
-      final material = flattenedMaterials[index];
-      final subCategoryName = productResponse.data
-          .firstWhere(
-            (subCategory) => subCategory.materials.contains(material),
-          )
-          .subCategoryName;
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        "Fresh Products",
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      ),
+      const SizedBox(
+        height: 10,
+      ),
+      GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          childAspectRatio: 0.8,
+        ),
+        itemCount: productResponse.data
+            .expand((subCategory) => subCategory.materials)
+            .toList()
+            .length,
+        itemBuilder: (context, index) {
+          final flattenedMaterials = productResponse.data
+              .expand((subCategory) => subCategory.materials)
+              .toList();
+          final material = flattenedMaterials[index];
+          final subCategoryName = productResponse.data
+              .firstWhere(
+                (subCategory) => subCategory.materials.contains(material),
+              )
+              .subCategoryName;
 
-      return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ItemScreen(material, subCategoryName
-                  //  material.subCategoryName,
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ItemScreen(material, subCategoryName
+                      //  material.subCategoryName,
+                      ),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xffA6E079).withOpacity(0.2),
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      ApiConstants.baseurl + material.thumbnail,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    material.fullName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    subCategoryName,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    'Price: ${material.publicPurchasePrice} /Per Kg',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  const Spacer(),
+                  InkWell(
+                    onTap: () {
+                      final exists = ref.read(cartProvider).any((item) =>
+                          item.materialInfoID == material.materialInfoID);
+                      if (exists) {
+                        showErrorToast(
+                            '${material.fullName} already added to cart!');
+                      } else {
+                        ref.read(cartProvider.notifier).addToCart(material);
+                        showSuccessToast('${material.fullName} added to cart!');
+                      }
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.all(5),
+                        width: double.infinity,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            border: Border.all(
+                              width: 1.0,
+                              color: Colors.green,
+                            ),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Add to Cart",
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Icon(
+                              Icons.shopping_cart,
+                              size: 14,
+                              color: Colors.white,
+                            )
+                          ],
+                        )),
+                  ),
+                  // ElevatedButton.icon(
+                  //   iconAlignment: IconAlignment.end,
+                  //   onPressed: () async {
+                  //     // await LocalDatabase().addCartItem(material);
+                  //     final exists = ref.read(cartProvider).any(
+                  //         (item) => item.materialInfoID == material.materialInfoID);
+                  //     if (exists) {
+                  //       showErrorToast(
+                  //           '${material.fullName} already added to cart!');
+                  //     } else {
+                  //       ref.read(cartProvider.notifier).addToCart(material);
+                  //       showSuccessToast('${material.fullName} added to cart!');
+                  //     }
+                  //   },
+                  //   label: const Text(
+                  //     "Add",
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   icon: const Icon(Icons.shopping_cart),
+                  // ),
+                ],
+              ),
             ),
           );
         },
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: const Color(0xffA6E079).withOpacity(0.2),
-            border: Border.all(color: Colors.grey),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  ApiConstants.baseurl + material.thumbnail,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                material.fullName,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                subCategoryName,
-                style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                'Price: ${material.publicPurchasePrice} /Per Kg',
-                style: const TextStyle(fontSize: 12),
-              ),
-              const Spacer(),
-              InkWell(
-                onTap: () {
-                  final exists = ref.read(cartProvider).any(
-                      (item) => item.materialInfoID == material.materialInfoID);
-                  if (exists) {
-                    showErrorToast(
-                        '${material.fullName} already added to cart!');
-                  } else {
-                    ref.read(cartProvider.notifier).addToCart(material);
-                    showSuccessToast('${material.fullName} added to cart!');
-                  }
-                },
-                child: Container(
-                    padding: const EdgeInsets.all(5),
-                    width: double.infinity,
-                    height: 30,
-                    decoration: BoxDecoration(
-                        color: Colors.green,
-                        border: Border.all(
-                          width: 1.0,
-                          color: Colors.green,
-                        ),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Add to Cart",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(
-                          Icons.shopping_cart,
-                          size: 14,
-                          color: Colors.white,
-                        )
-                      ],
-                    )),
-              ),
-              // ElevatedButton.icon(
-              //   iconAlignment: IconAlignment.end,
-              //   onPressed: () async {
-              //     // await LocalDatabase().addCartItem(material);
-              //     final exists = ref.read(cartProvider).any(
-              //         (item) => item.materialInfoID == material.materialInfoID);
-              //     if (exists) {
-              //       showErrorToast(
-              //           '${material.fullName} already added to cart!');
-              //     } else {
-              //       ref.read(cartProvider.notifier).addToCart(material);
-              //       showSuccessToast('${material.fullName} added to cart!');
-              //     }
-              //   },
-              //   label: const Text(
-              //     "Add",
-              //     style: TextStyle(fontSize: 18),
-              //   ),
-              //   icon: const Icon(Icons.shopping_cart),
-              // ),
-            ],
-          ),
-        ),
-      );
-    },
+      ),
+    ],
   );
 }
 // Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {

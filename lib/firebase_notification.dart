@@ -26,7 +26,17 @@ class NotificationService {
 
     //get token
     final token = await _messaging.getToken();
+    await _subscribeToTopic("all");
     print('FCM token: $token');
+  }
+
+  Future<void> _subscribeToTopic(String topic) async {
+    try {
+      await _messaging.subscribeToTopic(topic);
+      print('Subscribed to topic: $topic');
+    } catch (e) {
+      print('Failed to subscribe to topic: $topic, Error: $e');
+    }
   }
 
   Future<void> _requestPermission() async {
