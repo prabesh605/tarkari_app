@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/widgets/toast.dart';
 import 'package:tarkari_app/features/about_us/provider/contact_us_provider.dart';
 
+final isLoadingProvider = StateProvider<bool>((ref) => false);
+
 class ContactPage extends HookConsumerWidget {
   const ContactPage({super.key});
 
@@ -147,8 +149,9 @@ class ContactPage extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
                         if (formKey.currentState!.validate()) {
+                          ref.read(isLoadingProvider.notifier).state = true;
                           submitMessage.contactUsProvider(
                             fullName: nameController.text,
                             email: emailController.text,
@@ -156,7 +159,18 @@ class ContactPage extends HookConsumerWidget {
                             subject: subjectController.text,
                             message: messageController.text,
                           );
-                          showSuccessToast("Your Message has been Submited");
+                          ref.read(isLoadingProvider.notifier).state = false;
+                          final state = ref.read(contactUsProvider);
+                          state.when(
+                              initial: () {},
+                              progress: () {},
+                              error: (error) {
+                                showErrorToast('Something when Wrong');
+                              },
+                              success: (data) {
+                                formKey.currentState?.reset();
+                                showSuccessToast("Sucessfully Submitted");
+                              });
                         }
                       },
                       icon: const Icon(Icons.send),

@@ -240,7 +240,8 @@ class HomeScreen extends HookConsumerWidget {
                   progress: () => const Center(
                     child: Text(''),
                   ),
-                  error: (error) => _buildErrorState(error.toString()),
+                  error: (error) =>
+                      _buildErrorStateForCategory(error.toString()),
                   success: (productResponse) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -324,7 +325,9 @@ class HomeScreen extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  error: (error) => _buildErrorState(error.toString()),
+                  error: (error) => _buildErrorState(error.toString(), () {
+                    _refresh();
+                  }),
                   success: (productResponse) =>
                       _buildProductList(productResponse, ref),
                 ),
@@ -341,11 +344,56 @@ Widget _buildInitialState() {
   return const Center(child: Text("Welcome to A1 Tarkari Shop!"));
 }
 
-Widget _buildErrorState(String error) {
+Widget _buildErrorStateForCategory(String error) {
   return const Center(
-    child:
-        // Text('Something wrong while fetching data'),
-        Text(''),
+    child: Text(''),
+    // child: Text('Something wrong while fetching data'),
+  );
+}
+
+Widget _buildErrorState(String error, onPressed) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      const Icon(
+        Icons.error_outline,
+        size: 50,
+        color: Colors.red,
+      ),
+      const SizedBox(height: 10),
+      const Text(
+        "Oops! Something went wrong.",
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      const SizedBox(height: 5),
+      Text(
+        error,
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey[700],
+        ),
+        textAlign: TextAlign.center,
+      ),
+      const SizedBox(height: 20),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          backgroundColor: Colors.blue,
+        ),
+        onPressed: onPressed,
+        child: const Text(
+          "Retry",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+      ),
+    ],
   );
 }
 

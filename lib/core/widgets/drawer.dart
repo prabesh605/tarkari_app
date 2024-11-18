@@ -30,8 +30,9 @@ class DrawerWidget extends StatelessWidget {
           ListTile(
             title: const Text('Home'),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Home()));
+              Navigator.pop(context);
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => const Home()));
             },
           ),
           ListTile(

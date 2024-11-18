@@ -16,169 +16,108 @@ class ItemScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final itemcounter = useState(1);
+    final itemCounter = useState(1);
+
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 230, 240, 223),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.green,
-        // backgroundColor: const Color.fromARGB(255, 230, 240, 223),
         title: const Text("Product Details"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            // decoration: BoxDecoration(
-            //   border: Border.all(color: Colors.black, width: .5),
-            // ),
-            margin: const EdgeInsets.symmetric(vertical: 20),
-            alignment: Alignment.center,
-            height: 260,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  ApiConstants.baseurl + material.thumbnail,
-                  // height: 200,
+                  '${ApiConstants.baseurl}${material.thumbnail}',
+                  height: 240,
+                  width: double.infinity,
                   fit: BoxFit.cover,
                 ),
-                // child: Image.asset('assets/images/sample.jpg'),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  material.fullName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                  textAlign: TextAlign.start,
+                ),
+                Text(
+                  category,
+                  style: const TextStyle(color: Colors.black87),
+                )
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Rs. ${material.publicPurchasePrice * itemCounter.value}",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Row(
                   children: [
-                    Text(
-                      material.fullName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
+                    _CounterButton(
+                      icon: Icons.remove,
+                      onPressed: () {
+                        if (itemCounter.value > 1) {
+                          itemCounter.value--;
+                        }
+                      },
                     ),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    Text(
-                      category,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 200,
-                          child: Text(
-                            "Rs. ${material.publicPurchasePrice * itemcounter.value}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: Colors.grey.withOpacity(0.4)),
-                              ),
-                              child: IconButton(
-                                  icon: const Icon(Icons.remove),
-                                  onPressed: () {
-                                    if (itemcounter.value > 1) {
-                                      itemcounter.value--;
-                                      // ref
-                                      //     .read(cartProvider.notifier)
-                                      //     .updateItemCount(
-                                      //         material, material.itemCount - 1);
-                                    }
-                                  }),
-                            ),
-                            Container(
-                              width: 50,
-                              padding: const EdgeInsets.all(10),
-                              child: Center(
-                                child: Text(
-                                  // "${material.itemCount}",
-                                  "${itemcounter.value}",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: Colors.grey.withOpacity(0.4)),
-                              ),
-                              child: IconButton(
-                                iconSize: 20,
-                                onPressed: () {
-                                  if (itemcounter.value < 10) {
-                                    itemcounter.value++;
-                                    // ref
-                                    //     .read(cartProvider.notifier)
-                                    //     .updateItemCount(
-                                    //         material, material.itemCount + 1);
-                                  }
-                                },
-                                icon: const Icon(Icons.add),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Text(
-                      "Product Details",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      // height: 300,
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.5),
-                        border: Border.all(
-                          color: Colors.green.withOpacity(0.8),
-                        ),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Text(
-                        "$category एक पौष्टिक तरकारी हो जसमा भिटामिन, खनिज, र फाइबर भरपूर मात्रामा पाइन्छ। यसले शरीरलाई आवश्यक ऊर्जा प्रदान गर्नुका साथै रोग प्रतिरोधात्मक क्षमता बढाउन मद्दत गर्छ। विभिन्न परिकारमा प्रयोग गर्न मिल्ने $category स्वास्थ्यको लागि लाभदायक छ।",
-                        style: const TextStyle(fontSize: 14),
-                        softWrap: true,
+                        "${itemCounter.value}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    )
-                    // const Text("Lorem ipsum dolor sit amet,",
-                    //     style: TextStyle(fontSize: 14), maxLines: 4),
+                    ),
+                    _CounterButton(
+                      icon: Icons.add,
+                      onPressed: () {
+                        if (itemCounter.value < 10) {
+                          itemCounter.value++;
+                        }
+                      },
+                    ),
                   ],
                 ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "Product Details",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.green.withOpacity(0.5),
+                ),
               ),
-            ],
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Row(
+              child: Text(
+                "$category एक पौष्टिक तरकारी हो जसमा भिटामिन, खनिज, र फाइबर भरपूर मात्रामा पाइन्छ। यसले शरीरलाई आवश्यक ऊर्जा प्रदान गर्नुका साथै रोग प्रतिरोधात्मक क्षमता बढाउन मद्दत गर्छ। विभिन्न परिकारमा प्रयोग गर्न मिल्ने $category स्वास्थ्यको लागि लाभदायक छ।",
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+            const Spacer(),
+            Row(
               children: [
                 InkWell(
                   onTap: () {
@@ -192,11 +131,11 @@ class ItemScreen extends HookConsumerWidget {
                       status: material.status,
                       publicPurchasePrice: material.publicPurchasePrice,
                       thumbnail: material.thumbnail,
-                      itemCount: itemcounter.value,
+                      itemCount: itemCounter.value,
                     );
                     ref.read(cartProvider.notifier).addToCart(updatedMaterial);
                     showSuccessToast('${material.fullName} added to cart!',
-                        gravity: ToastGravity.TOP);
+                        gravity: ToastGravity.CENTER);
                   },
                   child: Container(
                     width: 50,
@@ -218,7 +157,7 @@ class ItemScreen extends HookConsumerWidget {
                       final orderDetails = Detail(
                         orderInfoDetailID: 0,
                         orderInfoMasterID: 0,
-                        quantity: itemcounter.value,
+                        quantity: itemCounter.value,
                         measuringUnitID: material.smallestUnitID,
                         materialInfoID: material.materialInfoID,
                       );
@@ -248,9 +187,35 @@ class ItemScreen extends HookConsumerWidget {
                   ),
                 )
               ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CounterButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _CounterButton({
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.withOpacity(0.5)),
+        ),
+        child: Icon(icon, size: 20),
       ),
     );
   }

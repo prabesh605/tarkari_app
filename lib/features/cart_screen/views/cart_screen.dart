@@ -116,43 +116,28 @@ class CartScreen extends HookConsumerWidget {
                     itemBuilder: (context, index) {
                       final material = cartItems[index];
                       final itemCount = ref.watch(itemCountProvider(index));
-                      return Container(
-                        margin: const EdgeInsets.all(10),
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: InkWell(
-                                onTap: () {
-                                  ref
-                                      .watch(cartProvider.notifier)
-                                      .removeFromCart(material);
-                                  ref
-                                      .read(itemCountProvider(index).notifier)
-                                      .state = 1;
-                                },
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
+                      return Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8.0),
                               ),
+                              border: Border.all(color: Colors.grey),
                             ),
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Center(
-                                child: ClipRRect(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Image section
+                                ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.network(
                                     ApiConstants.baseurl + material.thumbnail,
                                     height: 100,
+                                    width: 100,
+                                    fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return const Icon(
                                         Icons.error,
@@ -162,138 +147,207 @@ class CartScreen extends HookConsumerWidget {
                                     },
                                   ),
                                 ),
-                              ),
-                            ),
-                            Text(
-                              material.fullName,
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            Text("${material.publicPurchasePrice}/per Kg"),
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Price: Rs. ${material.publicPurchasePrice * itemCount}',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: Colors.grey),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        IconButton(
-                                            icon: const Icon(Icons.remove),
-                                            onPressed: () async {
-                                              if (itemCount > 1) {
-                                                ref
-                                                    .read(
-                                                        itemCountProvider(index)
-                                                            .notifier)
-                                                    .state--;
-                                                await _localDatabase
-                                                    .updateItemCountInDb(
-                                                        material.materialInfoID,
-                                                        itemCount - 1);
-                                              }
-                                            }),
-                                        Container(
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.4)),
-                                            ),
+                                const SizedBox(width: 10),
+
+                                // Item details and actions
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Item name and delete icon
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
                                             child: Text(
-                                              "$itemCount",
+                                              material.fullName,
                                               style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18),
-                                            )),
-                                        IconButton(
-                                          iconSize: 20,
-                                          onPressed: () async {
-                                            ref
-                                                .read(itemCountProvider(index)
-                                                    .notifier)
-                                                .state++;
-                                            await _localDatabase
-                                                .updateItemCountInDb(
-                                                    material.materialInfoID,
-                                                    itemCount + 1);
-                                          },
-                                          icon: const Icon(Icons.add),
-                                        ),
-                                      ],
-                                    ),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              ref
+                                                  .watch(cartProvider.notifier)
+                                                  .removeFromCart(material);
+                                              ref
+                                                  .read(itemCountProvider(index)
+                                                      .notifier)
+                                                  .state = 1;
+                                            },
+                                            child: const Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      const SizedBox(height: 8),
+
+                                      // Price per Kg
+                                      Text(
+                                        "Price: Rs. ${material.publicPurchasePrice} / per Kg",
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black87),
+                                      ),
+                                      const SizedBox(height: 8),
+
+                                      // Price and quantity controls
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // Total price
+                                          Text(
+                                            'Rs. ${material.publicPurchasePrice * itemCount}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          // Quantity control buttons
+                                          Container(
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                IconButton(
+                                                  icon:
+                                                      const Icon(Icons.remove),
+                                                  onPressed: () async {
+                                                    if (itemCount > 1) {
+                                                      ref
+                                                          .read(
+                                                              itemCountProvider(
+                                                                      index)
+                                                                  .notifier)
+                                                          .state--;
+                                                      await _localDatabase
+                                                          .updateItemCountInDb(
+                                                              material
+                                                                  .materialInfoID,
+                                                              itemCount - 1);
+                                                    }
+                                                  },
+                                                ),
+                                                Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 8),
+                                                  child: Text(
+                                                    "$itemCount",
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.add),
+                                                  onPressed: () async {
+                                                    ref
+                                                        .read(itemCountProvider(
+                                                                index)
+                                                            .notifier)
+                                                        .state++;
+                                                    await _localDatabase
+                                                        .updateItemCountInDb(
+                                                            material
+                                                                .materialInfoID,
+                                                            itemCount + 1);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          )
+                        ],
                       );
                     },
                   ),
           ),
           Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              width: double.infinity,
-              height: 40,
-              decoration: BoxDecoration(
-                // color: Colors.green.withOpacity(0.5),
-                border: Border.all(color: Colors.grey.withOpacity(0.5)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Total Cost: Rs. ${totalCost.toStringAsFixed(2)}",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.all(5),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.withOpacity(0.5)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Total cost text
+                Text(
+                  "Total Cost: Rs. ${totalCost.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                        backgroundColor: Colors.red),
-                    onPressed: () {
-                      if (cartItems.isNotEmpty) {
-                        final orderDetails = createOrderDetails(ref);
-                        print(orderDetails);
+                ),
+                // Order now button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    backgroundColor: Colors.green,
+                  ),
+                  onPressed: () {
+                    if (cartItems.isNotEmpty) {
+                      final orderDetails = createOrderDetails(ref);
+                      print(orderDetails);
 
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    CustomerForm(details: orderDetails)));
-                      } else {
-                        showErrorToast("Add Items in Cart to procceed",
-                            gravity: ToastGravity.CENTER);
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   const SnackBar(
-                        //       content: Text("Add Items in Cart to procceed")),
-                        // );
-                      }
-                    },
-                    child: const Text(
-                      "Order Now",
-                      style: TextStyle(color: Colors.white),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CustomerForm(details: orderDetails),
+                        ),
+                      );
+                    } else {
+                      showErrorToast(
+                        "Add Items in Cart to proceed",
+                        gravity: ToastGravity.CENTER,
+                      );
+                    }
+                  },
+                  child: const Text(
+                    "Order Now",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ))
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

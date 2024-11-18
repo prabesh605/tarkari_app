@@ -228,13 +228,14 @@ class CustomerForm extends HookConsumerWidget {
                       ),
                     ),
                     // const Spacer(),
-                    Center(
+                    SizedBox(
+                      width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            backgroundColor: Colors.red),
+                            backgroundColor: Colors.green),
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             if (selectedLocation != null) {

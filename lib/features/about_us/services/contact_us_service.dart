@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tarkari_app/core/constants/api_constants.dart';
 import 'package:tarkari_app/core/models/services/network/base_client.dart';
