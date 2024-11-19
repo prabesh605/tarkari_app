@@ -9,6 +9,7 @@ import 'package:tarkari_app/core/models/services/network/network_connection.dart
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tarkari_app/core/widgets/drawer.dart';
 import 'package:tarkari_app/core/widgets/toast.dart';
+import 'package:tarkari_app/features/auth/view/loggin_screen.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
 import 'package:tarkari_app/features/home_screen/providers/items_provider.dart';
@@ -85,13 +86,19 @@ class HomeScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text("A1 Tarkari shop"),
         backgroundColor: Colors.green,
+
         // backgroundColor: const Color(0xffA6E079),
-        actions: const [
-          // IconButton(
-          //   icon: const Icon(Icons.search),
-          //   onPressed: () {},
-          // ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.search),
+        //     onPressed: () {
+        //       Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //               builder: (context) => const LoggingScreen()));
+        //     },
+        //   ),
+        // ],
       ),
       drawer: const DrawerWidget(),
       body: RefreshIndicator(
@@ -458,6 +465,7 @@ Widget _buildProductList(ProductResponse productResponse, WidgetRef ref) {
                     child: Image.network(
                       ApiConstants.baseurl + material.thumbnail,
                       height: 100,
+                      width: double.infinity,
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -84,9 +84,6 @@ class _$ResponseStatusCopyWithImpl<T, $Res, $Val extends ResponseStatus<T>>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -106,9 +103,6 @@ class __$$ResponseStatusInitialImplCopyWithImpl<T, $Res>
       _$ResponseStatusInitialImpl<T> _value,
       $Res Function(_$ResponseStatusInitialImpl<T>) _then)
       : super(_value, _then);
-
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -227,9 +221,6 @@ class __$$ResponseStatusProgressImplCopyWithImpl<T, $Res>
       _$ResponseStatusProgressImpl<T> _value,
       $Res Function(_$ResponseStatusProgressImpl<T>) _then)
       : super(_value, _then);
-
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -348,8 +339,6 @@ class __$$ResponseStatusErrorImplCopyWithImpl<T, $Res>
       $Res Function(_$ResponseStatusErrorImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -386,9 +375,7 @@ class _$ResponseStatusErrorImpl<T> implements ResponseStatusError<T> {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(error));
 
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ResponseStatusErrorImplCopyWith<T, _$ResponseStatusErrorImpl<T>>
@@ -475,10 +462,7 @@ abstract class ResponseStatusError<T> implements ResponseStatus<T> {
       _$ResponseStatusErrorImpl<T>;
 
   Object get error;
-
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$ResponseStatusErrorImplCopyWith<T, _$ResponseStatusErrorImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -503,8 +487,6 @@ class __$$ResponseStatusSuccessImplCopyWithImpl<T, $Res>
       $Res Function(_$ResponseStatusSuccessImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -544,9 +526,7 @@ class _$ResponseStatusSuccessImpl<T> implements ResponseStatusSuccess<T> {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
 
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ResponseStatusSuccessImplCopyWith<T, _$ResponseStatusSuccessImpl<T>>
@@ -633,10 +613,7 @@ abstract class ResponseStatusSuccess<T> implements ResponseStatus<T> {
       _$ResponseStatusSuccessImpl<T>;
 
   T? get data;
-
-  /// Create a copy of ResponseStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$ResponseStatusSuccessImplCopyWith<T, _$ResponseStatusSuccessImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
 }

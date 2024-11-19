@@ -45,7 +45,7 @@ class LoggingScreen extends HookConsumerWidget {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Image.asset("assets/icons/vegetable_logo.png"),
+                  Image.asset("assets/icons/logo.png"),
                   const Text(
                     "A1 Tarkari shop",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
