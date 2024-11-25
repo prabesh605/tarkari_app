@@ -84,7 +84,7 @@ class HomeScreen extends HookConsumerWidget {
     final itemsProviderState = ref.watch(itemsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("A1 Tarkari shop"),
+        title: const Text("Tarkari Sewa"),
         backgroundColor: Colors.green,
 
         // backgroundColor: const Color(0xffA6E079),
@@ -348,7 +348,7 @@ class HomeScreen extends HookConsumerWidget {
 }
 
 Widget _buildInitialState() {
-  return const Center(child: Text("Welcome to A1 Tarkari Shop!"));
+  return const Center(child: Text("Welcome to Tarkari Sewa!"));
 }
 
 Widget _buildErrorStateForCategory(String error) {

@@ -47,7 +47,7 @@ class LoggingScreen extends HookConsumerWidget {
                 children: [
                   Image.asset("assets/icons/logo.png"),
                   const Text(
-                    "A1 Tarkari shop",
+                    "Tarkari Sewa",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                   ),
                   const Text("स्वस्थ जीवनको लागि ताजा तरकारी र राम्रो खाना! "),

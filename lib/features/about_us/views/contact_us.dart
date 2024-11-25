@@ -46,17 +46,17 @@ class ContactPage extends HookConsumerWidget {
               const ListTile(
                 leading: Icon(Icons.email, color: Colors.green),
                 title: Text('Email'),
-                subtitle: Text('support@a1tarkarishop.com'),
+                subtitle: Text('support@tarkarisewa.com'),
               ),
               const ListTile(
                 leading: Icon(Icons.phone, color: Colors.green),
                 title: Text('Phone'),
-                subtitle: Text('+1 234 567 890'),
+                subtitle: Text('+977 9842905412'),
               ),
               const ListTile(
                 leading: Icon(Icons.location_on, color: Colors.green),
                 title: Text('Address'),
-                subtitle: Text('123 Tarkari Street, Green City, Earth'),
+                subtitle: Text('Kalimati, Kathmandu, Nepal'),
               ),
               const SizedBox(height: 20),
               // const Text(

@@ -8,3 +8,8 @@ class StorageConstant {
   static const String userId = 'userId';
   static const String userName = 'userName';
 }
+
+class ImageConstant {
+  static const String logo = 'assets/icons/newLogo.png';
+  static const String splashBackground = 'assets/images/background2.jpg';
+}

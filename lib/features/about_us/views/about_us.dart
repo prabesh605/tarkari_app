@@ -31,7 +31,7 @@ class AboutUs extends HookConsumerWidget {
             const SizedBox(height: 20),
 
             const Text(
-              "A1 Tarkari Shop",
+              "Tarkari Sewa",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -40,7 +40,7 @@ class AboutUs extends HookConsumerWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              "AI Tarkari Shop delivers fresh vegetables right to your door. "
+              "Tarkari Sewa delivers fresh vegetables right to your door. "
               "We focus on quality and convenience, ensuring the best shopping experience for our customers.",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.black87),

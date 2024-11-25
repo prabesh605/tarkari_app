@@ -17,7 +17,7 @@ class DrawerServicePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'AI Tarkari Shop: Fresh Vegetables Delivered to Your Door',
+                'Tarkari Sewa: Fresh Vegetables Delivered to Your Door',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 16),
@@ -75,7 +75,7 @@ class DrawerServicePage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                  'For inquiries, please email us at: support@a1tarkarishop.com'),
+                  'For inquiries, please email us at: support@tarkarisewa.com'),
             ],
           ),
         ),

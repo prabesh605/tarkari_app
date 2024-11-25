@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:tarkari_app/core/constants/storage_constants.dart';
 import 'package:tarkari_app/features/about_us/views/about_us.dart';
 import 'package:tarkari_app/features/about_us/views/contact_us.dart';
 import 'package:tarkari_app/features/about_us/views/services.dart';
@@ -23,7 +24,7 @@ class DrawerWidget extends StatelessWidget {
               color: Colors.white,
             ),
             child: Image.asset(
-              "assets/icons/logo.png",
+              ImageConstant.logo,
               alignment: Alignment.centerLeft,
             ),
           ),
