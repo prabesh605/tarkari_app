@@ -10,6 +10,7 @@ class StorageConstant {
 }
 
 class ImageConstant {
-  static const String logo = 'assets/icons/newLogo.png';
-  static const String splashBackground = 'assets/images/background2.jpg';
+  static const String logo = 'assets/icons/tarkarisewalogo.png';
+  static const String splashBackground =
+      'assets/images/tarkarisewabackground.jpg';
 }
