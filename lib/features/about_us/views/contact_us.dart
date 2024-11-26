@@ -46,12 +46,12 @@ class ContactPage extends HookConsumerWidget {
               const ListTile(
                 leading: Icon(Icons.email, color: Colors.green),
                 title: Text('Email'),
-                subtitle: Text('support@tarkarisewa.com'),
+                subtitle: Text('sewatarkari@gmail.com'),
               ),
               const ListTile(
                 leading: Icon(Icons.phone, color: Colors.green),
                 title: Text('Phone'),
-                subtitle: Text('+977 9842905412'),
+                subtitle: Text('+977 9864839990\n+977 9813324292'),
               ),
               const ListTile(
                 leading: Icon(Icons.location_on, color: Colors.green),

@@ -1,40 +1,21 @@
 {
   "project_info": {
-    "project_number": "792929938644",
-    "project_id": "tarkari-6d936",
-    "storage_bucket": "tarkari-6d936.firebasestorage.app"
+    "project_number": "295541210021",
+    "project_id": "tarkarisewa-3cae5",
+    "storage_bucket": "tarkarisewa-3cae5.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:792929938644:android:c66d9ba1ac105c19dddf41",
+        "mobilesdk_app_id": "1:295541210021:android:52ab28a255e2bb3492864c",
         "android_client_info": {
-          "package_name": "com.example.tarkari_app"
+          "package_name": "com.shopping.tarkari_sewa"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5PcEKq07OBDq14ZvDno0okkLpU-86XTE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:792929938644:android:ab54189b01f9bb2edddf41",
-        "android_client_info": {
-          "package_name": "com.shopping.tarkari_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD5PcEKq07OBDq14ZvDno0okkLpU-86XTE"
+          "current_key": "AIzaSyDyj1BIv3Y21OV-nA4M7AOeT_TWsEAcqZ4"
         }
       ],
       "services": {

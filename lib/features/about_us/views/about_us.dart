@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tarkari_app/core/constants/storage_constants.dart';
 
 class AboutUs extends HookConsumerWidget {
   const AboutUs({super.key});
@@ -21,7 +22,7 @@ class AboutUs extends HookConsumerWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.asset(
-                  'assets/icons/logo.png',
+                  ImageConstant.logo,
                   height: 100,
                   width: 100,
                   fit: BoxFit.cover,
@@ -47,6 +48,7 @@ class AboutUs extends HookConsumerWidget {
             ),
             const SizedBox(height: 30),
             // Developer Information
+            const Spacer(),
             const Divider(),
             const Text(
               "Developed By:",
@@ -66,15 +68,15 @@ class AboutUs extends HookConsumerWidget {
               style: TextStyle(fontSize: 16, color: Colors.blue),
             ),
             const Divider(),
-            const Spacer(),
+            // const Spacer(),
             // Version Info
-            const Text(
-              "Version 1.0.0",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
+            // const Text(
+            //   "Version 1.0.0",
+            //   style: TextStyle(
+            //     fontSize: 14,
+            //     color: Colors.grey,
+            //   ),
+            // ),
           ],
         ),
       ),

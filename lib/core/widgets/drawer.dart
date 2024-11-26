@@ -37,7 +37,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('About'),
+            title: const Text('About Us'),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const AboutUs()));
@@ -45,7 +45,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Service'),
+            title: const Text('Services'),
             onTap: () {
               Navigator.push(
                   context,
@@ -55,7 +55,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Contact'),
+            title: const Text('Contact Us'),
             onTap: () {
               // ContactPage
               Navigator.push(context,

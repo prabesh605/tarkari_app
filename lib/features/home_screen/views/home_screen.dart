@@ -9,7 +9,6 @@ import 'package:tarkari_app/core/models/services/network/network_connection.dart
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tarkari_app/core/widgets/drawer.dart';
 import 'package:tarkari_app/core/widgets/toast.dart';
-import 'package:tarkari_app/features/auth/view/loggin_screen.dart';
 import 'package:tarkari_app/features/cart_screen/providers/cart_provider.dart';
 import 'package:tarkari_app/features/home_screen/model/product_model.dart';
 import 'package:tarkari_app/features/home_screen/providers/items_provider.dart';
@@ -74,6 +73,7 @@ class HomeScreen extends HookConsumerWidget {
           }
         }
       });
+      return null;
     }, []);
     // useEffect(() {
     //   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -84,7 +84,10 @@ class HomeScreen extends HookConsumerWidget {
     final itemsProviderState = ref.watch(itemsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tarkari Sewa"),
+        title: const Text(
+          "Tarkari Sewa",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.green,
 
         // backgroundColor: const Color(0xffA6E079),

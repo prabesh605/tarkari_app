@@ -74,8 +74,7 @@ class DrawerServicePage extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              Text(
-                  'For inquiries, please email us at: support@tarkarisewa.com'),
+              Text('For inquiries, please email us at: sewatarkari@gmail.com'),
             ],
           ),
         ),

@@ -15,10 +15,6 @@ class SplashScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // ref.read(itemsProvider.notifier).getItemsData();
-      });
-      ref.read(itemsProvider.notifier).getItemsData();
       final timer = Timer(const Duration(seconds: 5), () {
         Navigator.pushReplacement(
           context,
